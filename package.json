@@ -16,7 +16,12 @@
     "url": "https://github.com/chunliu/typescript-react-hot-reload"
   },
   "dependencies": {
+    "@udecode/slate-plugins": "^1.0.0-alpha.25",
+    "@udecode/slate-plugins-node-id": "^1.0.0-alpha.25",
+    "@uifabric/styling": "^7.19.0",
+    "@uifabric/utilities": "^7.33.5",
     "antd": "^4.8.3",
+    "nanoid": "^3.1.23",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-redux": "^7.2.2",
@@ -24,7 +29,11 @@
     "react-router-config": "5.1.1",
     "react-router-dom": "5.2.0",
     "redux": "4.0.5",
-    "redux-thunk": "2.3.0"
+    "redux-thunk": "2.3.0",
+    "slate": "^0.63.0",
+    "slate-history": "^0.62.0",
+    "slate-hyperscript": "^0.62.0",
+    "slate-react": "^0.63.0"
   },
   "devDependencies": {
     "@types/enzyme": "^3.10.8",
