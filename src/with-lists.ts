@@ -3,14 +3,16 @@ import {
   BaseEditor,
   Editor as SlateEditor,
   Element as SlateElement,
+  Path,
   Node,
   Range,
   Transforms,
 } from "slate";
 import { ReactEditor } from "slate-react";
+import { ElementNode } from "./models";
 
 export default function withLists(editor: BaseEditor & ReactEditor) {
-  const { insertBreak, insertText } = editor;
+  const { insertBreak, insertText, normalizeNode } = editor;
   editor.insertBreak = () => {
     // if current element is empty , just convert it to paragraph
     const parent1 = SlateEditor.above(editor);
@@ -50,7 +52,14 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
         SlateElement.isElement(parent[0]) &&
         parent[0].type === "list-item"
       ) {
-        Transforms.insertText(editor, "- ");
+        const listBlock = SlateEditor.above(editor, { at: parent[1] }) as
+          | [ElementNode, Path]
+          | undefined;
+        console.log({ listBlock });
+        const indentText = new Array((listBlock && listBlock[0].depth) || 0)
+          .fill("  ")
+          .join("");
+        Transforms.insertText(editor, indentText + "- ");
       }
     }
   };
@@ -82,7 +91,7 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
               match: (n) => SlateEditor.isBlock(editor, n),
             }
           );
-          const list = { id: nanoid(), type: "list", children: [] };
+          const list = { id: nanoid(), type: "list", children: [], depth: 0 };
           Transforms.wrapNodes(editor, list, {
             match: (n) => {
               const m =
@@ -99,6 +108,22 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
         console.log({ beforeText });
       }
     }
+    editor.normalizeNode = ([node, path]) => {
+      // if (SlateElement.isElement(node) && node.type === "list") {
+      //   const elder = Node.get(editor, Path.previous(path));
+      //   if (
+      //     elder &&
+      //     SlateElement.isElement(elder) &&
+      //     elder.type === "list-item"
+      //   ) {
+      //     console.log("need to change");
+      //     Transforms.moveNodes(editor, {
+      //       at: path,
+      //       to: Path.previous(path).concat(1),
+      //     });
+      //   }
+      // }
+    };
   };
 
   return editor;
