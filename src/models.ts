@@ -5,4 +5,5 @@ export interface ElementNode {
   type: string;
   children: (ElementNode | Text)[];
   depth?: number;
+  task?: boolean;
 }

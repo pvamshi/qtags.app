@@ -16,6 +16,16 @@ declare module "slate" {
   }
 }
 
+/* 
+  - Handle tasks
+    - handle done state
+  - Hanlde multiple types of list chars
+  - handle number types
+  - Add header and other plugins
+  - Style tags with lighter color
+  - add tags and queries
+  - save and retrieve from database
+*/
 const App = () => {
   const editor = useMemo(() => withLists(withReact(createEditor())), []);
   const [value, setValue] = useState<Descendant[]>([
@@ -30,7 +40,7 @@ const App = () => {
       value={value}
       onChange={(newValue) => setValue(newValue)}
     >
-      <Editable onKeyDown={handleKeys(editor)} />
+      <Editable onKeyDown={handleKeys(editor)} placeholder={"dump"} />
     </Slate>
   );
 };

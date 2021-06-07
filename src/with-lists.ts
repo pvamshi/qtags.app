@@ -10,6 +10,7 @@ import {
 } from "slate";
 import { ReactEditor } from "slate-react";
 import { ElementNode } from "./models";
+import { getBlock, setListType, setTaskType } from "./utils";
 
 export default function withLists(editor: BaseEditor & ReactEditor) {
   const { insertBreak, insertText, normalizeNode } = editor;
@@ -45,7 +46,7 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
       // set id for each element
       Transforms.setNodes(editor, { id: nanoid() });
       // add list identifier if its a list
-      const parent = SlateEditor.above(editor);
+      const parent = getBlock(editor);
       if (
         parent &&
         parent.length > 0 &&
@@ -55,11 +56,13 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
         const listBlock = SlateEditor.above(editor, { at: parent[1] }) as
           | [ElementNode, Path]
           | undefined;
-        console.log({ listBlock });
         const indentText = new Array((listBlock && listBlock[0].depth) || 0)
           .fill("  ")
           .join("");
-        Transforms.insertText(editor, indentText + "- ");
+        Transforms.insertText(
+          editor,
+          indentText + (parent[0].task ? "- [ ] " : "- ")
+        );
       }
     }
   };
@@ -67,63 +70,37 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
     insertText(text);
     const { selection } = editor;
     if (text === " " && selection && Range.isCollapsed(selection)) {
-      const parent = SlateEditor.above(editor);
+      const { anchor } = selection;
+      const block = SlateEditor.above(editor, {
+        match: (n) => SlateEditor.isBlock(editor, n),
+      });
+      const path = block ? block[1] : [];
+      const start = SlateEditor.start(editor, path);
+      const range = { anchor, focus: start };
+      const beforeText = SlateEditor.string(editor, range);
+
       if (
-        parent &&
-        parent.length > 0 &&
-        SlateElement.isElement(parent[0]) &&
-        parent[0].type === "paragraph"
+        beforeText.startsWith("- ") &&
+        block &&
+        SlateElement.isElement(block[0]) &&
+        block[0].type === "paragraph"
       ) {
-        const { anchor } = selection;
-        const block = SlateEditor.above(editor, {
-          match: (n) => SlateEditor.isBlock(editor, n),
-        });
-        const path = block ? block[1] : [];
-        const start = SlateEditor.start(editor, path);
-        const range = { anchor, focus: start };
-        const beforeText = SlateEditor.string(editor, range);
+        setListType(editor);
+      }
 
-        if (beforeText.startsWith("- ")) {
-          Transforms.setNodes(
-            editor,
-            { type: "list-item" },
-            {
-              match: (n) => SlateEditor.isBlock(editor, n),
-            }
-          );
-          const list = { id: nanoid(), type: "list", children: [], depth: 0 };
-          Transforms.wrapNodes(editor, list, {
-            match: (n) => {
-              const m =
-                !SlateEditor.isEditor(n) &&
-                SlateElement.isElement(n) &&
-                n.type === "list-item";
-
-              console.log({ m, n });
-              return m;
-            },
-          });
-        }
-
-        console.log({ beforeText });
+      if (
+        beforeText.match(/^\s*- \[ \] $/) &&
+        block &&
+        SlateElement.isElement(block[0]) &&
+        block[0].type === "list-item"
+      ) {
+        setTaskType(editor);
       }
     }
-    editor.normalizeNode = ([node, path]) => {
-      // if (SlateElement.isElement(node) && node.type === "list") {
-      //   const elder = Node.get(editor, Path.previous(path));
-      //   if (
-      //     elder &&
-      //     SlateElement.isElement(elder) &&
-      //     elder.type === "list-item"
-      //   ) {
-      //     console.log("need to change");
-      //     Transforms.moveNodes(editor, {
-      //       at: path,
-      //       to: Path.previous(path).concat(1),
-      //     });
-      //   }
-      // }
-    };
+
+    // TODO: if two lists are one after other of same type,  just merge them together
+    // editor.normalizeNode = ([node, path]) => {
+    // };
   };
 
   return editor;

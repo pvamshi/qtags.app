@@ -12,6 +12,9 @@ import { nanoid } from "nanoid";
 import { getBlock } from "./utils";
 import { ElementNode } from "./models";
 
+/**
+ * TODO: Handle delete key
+ */
 const a =
   (editor: BaseEditor & ReactEditor): KeyboardEventHandler<HTMLDivElement> =>
   (event) => {
@@ -26,18 +29,25 @@ const a =
         event.preventDefault();
         if (event.shiftKey) {
           // unindent
-          console.log("unindent");
-          Transforms.select(editor, SlateEditor.start(editor, block[1]));
-          Transforms.delete(editor, { distance: 2, unit: "character" });
-          // Transforms.select(editor, SlateEditor.start(editor, block[1]));
-          // TODO: Move cursor where it was earlier
-          // TODO: add element to previous level
-          // if prev is list, let it be list , else convert to paragraph
-          // if its in the middle, split the list (??)
-          const target = [...block[1]];
-          // target.pop();
-          // Transforms.moveNodes(editor, { at: block[1], to: target });
-
+          const listElement = SlateEditor.above(editor, {
+            match: (n) => SlateElement.isElement(n) && n.type === "list",
+          });
+          const selection = editor.selection;
+          if (selection && listElement) {
+            const parentPath = Path.parent(listElement[1]);
+            if (
+              parentPath.length === 0 ||
+              SlateEditor.isEditor(Node.get(editor, parentPath))
+            ) {
+              // its already at root level
+              return;
+            }
+            const offset = selection.focus.offset - 2;
+            Transforms.select(editor, SlateEditor.start(editor, block[1]));
+            Transforms.delete(editor, { distance: 2, unit: "character" });
+            Transforms.move(editor, { distance: offset, unit: "character" });
+            Transforms.liftNodes(editor, { at: block[1] });
+          }
           return;
         }
         // add extra space at the beginning
@@ -59,21 +69,6 @@ const a =
           },
           { at: block[1] }
         );
-
-        const node = Node.get(editor, block[1]);
-        if (SlateElement.isElement(node) && node.type === "list") {
-          const elder = Node.get(editor, Path.previous(block[1]));
-          if (
-            elder &&
-            SlateElement.isElement(elder) &&
-            elder.type === "list-item"
-          ) {
-            Transforms.moveNodes(editor, {
-              at: block[1],
-              to: Path.previous(block[1]).concat(1),
-            });
-          }
-        }
       }
     }
   };
