@@ -11,22 +11,10 @@ import { ElementNode } from "./models";
 import handleKeys from "./hotkeys";
 import firebase from "firebase";
 import { useEffect } from "react";
-import SkeletonButton from "antd/lib/skeleton/Button";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDe0MkMRDzySCZA9Bx_0OWNeZcfkBkzB6M",
-  authDomain: "qtags-app.firebaseapp.com",
-  databaseURL:
-    "https://qtags-app-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "qtags-app",
-  storageBucket: "qtags-app.appspot.com",
-  messagingSenderId: "876480915268",
-  appId: "1:876480915268:web:f37cb36be791cd15729911",
-  measurementId: "G-TZYHCTL9GG",
-};
+// var user = firebase.auth().currentUser;
 
-firebase.initializeApp(firebaseConfig);
-var database = firebase.database();
+// var database = firebase.database();
 function writeUserData(id: string, data: any) {
   console.log("writing");
   firebase
@@ -55,7 +43,7 @@ declare module "slate" {
   - add tags and queries
   - save and retrieve from database
 */
-const App = () => {
+const App = ({ uid }: { uid: string }) => {
   const editor = useMemo(() => withLists(withReact(createEditor())), []);
   const [value, setValue] = useState<Descendant[]>([
     { type: "paragraph", id: nanoid(), children: [{ text: "starting" }] },
@@ -64,7 +52,7 @@ const App = () => {
     const dbRef = firebase.database().ref();
     dbRef
       .child("nodes")
-      .child("test")
+      .child(uid)
       .get()
       .then((snapshot) => {
         if (snapshot.exists()) {
@@ -82,17 +70,20 @@ const App = () => {
   console.log(value);
   const updateData = (data: Descendant[]) => {
     setValue(data);
-    update("test", data);
+    update(uid, data);
   };
   return (
     // Add the editable component inside the context.
-    <Slate
-      editor={editor}
-      value={value}
-      onChange={(newValue) => updateData(newValue)}
-    >
-      <Editable onKeyDown={handleKeys(editor)} placeholder={"dump"} />
-    </Slate>
+    <>
+      {uid}
+      <Slate
+        editor={editor}
+        value={value}
+        onChange={(newValue) => updateData(newValue)}
+      >
+        <Editable onKeyDown={handleKeys(editor)} placeholder={"dump"} />
+      </Slate>
+    </>
   );
 };
 
