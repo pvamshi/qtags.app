@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import * as React from "react";
 import { BaseEditor, createEditor, Descendant } from "slate";
 import { Editable, ReactEditor, Slate, withReact } from "slate-react";
-import logTree from "console-log-tree";
+// import logTree from "console-log-tree";
 import { debounce } from "debounce";
 
 import withLists from "./with-lists";
@@ -66,7 +66,7 @@ const App = ({ uid }: { uid: string }) => {
         console.error(error);
       });
   }, [setValue]);
-  logTree.log(log(value));
+  // logTree.log(log(value));
   console.log(value);
   const updateData = (data: Descendant[]) => {
     setValue(data);

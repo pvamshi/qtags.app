@@ -25,21 +25,28 @@ firebase
   .signInWithPopup(provider)
   .then((result) => {
     /** @type {firebase.auth.OAuthCredential} */
-    var credential = result.credential;
+    var credential: firebase.auth.OAuthCredential | null = result.credential;
 
+    if (credential !== null) {
+      var token = credential.accessToken;
+      // The signed-in user info.
+      var user = result.user;
+      if (user) {
+        ReactDOM.render(
+          <React.StrictMode>
+            {/* <FirebaseAppProvider firebaseConfig={firebaseConfig}> */}
+            <App uid={user.uid} />
+            {/* </FirebaseAppProvider> */}
+          </React.StrictMode>,
+          document.getElementById("root")
+        );
+      } else {
+        document.createElement("<p> Error while logging in</p>");
+      }
+    } else {
+      document.createElement("<p> Error while logging in</p>");
+    }
     // This gives you a Google Access Token. You can use it to access the Google API.
-    var token = credential.accessToken;
-    // The signed-in user info.
-    var user = result.user;
-    console.log({ user });
-    ReactDOM.render(
-      <React.StrictMode>
-        {/* <FirebaseAppProvider firebaseConfig={firebaseConfig}> */}
-        <App uid={user.uid} />
-        {/* </FirebaseAppProvider> */}
-      </React.StrictMode>,
-      document.getElementById("root")
-    );
     // ...
   })
   .catch((error) => {
