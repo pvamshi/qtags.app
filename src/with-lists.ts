@@ -13,7 +13,7 @@ import { ElementNode } from "./models";
 import { getBlock, setListType, setTaskType } from "./utils";
 
 export default function withLists(editor: BaseEditor & ReactEditor) {
-  const { insertBreak, insertText, normalizeNode } = editor;
+  const { insertBreak, insertText, deleteBackward, deleteForward } = editor;
   editor.insertBreak = () => {
     // if current element is empty , just convert it to paragraph
     const parent1 = SlateEditor.above(editor);
@@ -89,7 +89,7 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
       }
 
       if (
-        beforeText.match(/^\s*- \[ \] $/) &&
+        beforeText.match(/^\s*- \[[xX ]\] $/) &&
         block &&
         SlateElement.isElement(block[0]) &&
         block[0].type === "list-item"
@@ -98,10 +98,51 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
       }
     }
 
+    editor.deleteBackward = (...args) => {
+      console.log("de");
+      deleteBackward(...args);
+      updateBlockType(editor);
+    };
+
+    editor.deleteForward = (...args) => {
+      console.log("ff");
+    };
+
     // TODO: if two lists are one after other of same type,  just merge them together
     // editor.normalizeNode = ([node, path]) => {
     // };
   };
 
   return editor;
+}
+
+function updateBlockType(editor: BaseEditor & ReactEditor) {
+  const blockEntry = getBlock(editor);
+  console.log({ blockEntry });
+  if (!blockEntry || !SlateElement.isElement(blockEntry[0])) {
+    return;
+  }
+  console.log(blockEntry);
+  const [block, path] = blockEntry as [SlateElement, Path];
+  const text = Node.string(block);
+  if (block.type === "list-item") {
+    // convert task to regular
+    if (block.task) {
+      if (!text.match(/^\s*- \[[xX ]\]/)) {
+        console.log("updating task item type");
+        // Transforms.splitNodes(editor, { at: path });
+        Transforms.setNodes(editor, { task: false }, { at: path });
+      }
+    }
+    // make sure its still list-tem
+    if (!text.match(/^\s*- /)) {
+      console.log("updating list item type");
+      // Transforms.splitNodes(editor, { at: path });
+      Transforms.unwrapNodes(editor, { at: path, split: true });
+      // Transforms.setNodes(editor, { type: "paragraph" }, { at: path });
+    }
+    // check the indentation levels are proper
+  } else {
+    //check if it is a list item now
+  }
 }

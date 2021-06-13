@@ -11,6 +11,7 @@ import { ElementNode } from "./models";
 import handleKeys from "./hotkeys";
 import firebase from "firebase";
 import { useEffect } from "react";
+import { withShortcuts, Element } from "./with-basics";
 
 // var user = firebase.auth().currentUser;
 
@@ -25,7 +26,7 @@ function writeUserData(id: string, data: any) {
       console.log("done writinf");
     });
 }
-const update = debounce(writeUserData, 1000);
+const update = debounce(writeUserData, 5000);
 declare module "slate" {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor;
@@ -44,7 +45,10 @@ declare module "slate" {
   - save and retrieve from database
 */
 const App = ({ uid }: { uid: string }) => {
-  const editor = useMemo(() => withLists(withReact(createEditor())), []);
+  const editor = useMemo(
+    () => withShortcuts(withLists(withReact(createEditor()))),
+    []
+  );
   const [value, setValue] = useState<Descendant[]>([
     { type: "paragraph", id: nanoid(), children: [{ text: "starting" }] },
   ]);
@@ -66,24 +70,30 @@ const App = ({ uid }: { uid: string }) => {
         console.error(error);
       });
   }, [setValue]);
-  // logTree.log(log(value));
   console.log(value);
+  // logTree.log(log(value));
   const updateData = (data: Descendant[]) => {
     setValue(data);
     update(uid, data);
   };
+  const renderElement = React.useCallback(
+    (props) => <Element {...props} />,
+    []
+  );
+
   return (
     // Add the editable component inside the context.
-    <>
-      {uid}
-      <Slate
-        editor={editor}
-        value={value}
-        onChange={(newValue) => updateData(newValue)}
-      >
-        <Editable onKeyDown={handleKeys(editor)} placeholder={"dump"} />
-      </Slate>
-    </>
+    <Slate
+      editor={editor}
+      value={value}
+      onChange={(newValue) => updateData(newValue)}
+    >
+      <Editable
+        renderElement={renderElement}
+        onKeyDown={handleKeys(editor)}
+        placeholder={"dump"}
+      />
+    </Slate>
   );
 };
 
