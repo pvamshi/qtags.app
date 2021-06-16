@@ -105,7 +105,20 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
     };
 
     editor.deleteForward = (...args) => {
-      console.log("ff");
+      deleteForward(...args);
+      const [block, path] = getBlock(editor);
+      if (!block) {
+        return;
+      }
+      if (SlateElement.isElement(block) && block.type === "list-item") {
+        const text = Node.string(block);
+        if (block.task && !text.match(/\s*- \[ \]/)) {
+          Transforms.setNodes(editor, { task: false }, { at: path });
+        }
+        if (!text.match(/^- /)) {
+          Transforms.setNodes(editor, { type: "paragraph" }, { at: path });
+        }
+      }
     };
 
     // TODO: if two lists are one after other of same type,  just merge them together

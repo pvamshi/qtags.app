@@ -8,9 +8,11 @@ import {
 import { ReactEditor } from "slate-react";
 
 export function getBlock(editor: BaseEditor & ReactEditor) {
-  return SlateEditor.above(editor, {
-    match: (n) => SlateEditor.isBlock(editor, n),
-  });
+  return (
+    SlateEditor.above(editor, {
+      match: (n) => SlateEditor.isBlock(editor, n),
+    }) || [undefined, undefined]
+  );
 }
 
 export function setListType(editor: BaseEditor & ReactEditor) {
