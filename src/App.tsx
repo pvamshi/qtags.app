@@ -1,7 +1,12 @@
 import { nanoid } from "nanoid";
 import { useMemo, useState } from "react";
 import * as React from "react";
-import { BaseEditor, createEditor, Descendant } from "slate";
+import {
+  BaseEditor,
+  createEditor,
+  Descendant,
+  Element as SlateElement,
+} from "slate";
 import { Editable, ReactEditor, Slate, withReact } from "slate-react";
 // import logTree from "console-log-tree";
 import { debounce } from "debounce";
@@ -57,10 +62,11 @@ const App = ({ uid }: { uid: string }) => {
     dbRef
       .child("nodes")
       .child(uid)
+      .child("0")
       .get()
       .then((snapshot) => {
         if (snapshot.exists()) {
-          setValue(snapshot.val());
+          // setValue(snapshot.val());
           console.log(snapshot.val());
         } else {
           console.log("No data available");
@@ -74,7 +80,11 @@ const App = ({ uid }: { uid: string }) => {
   // logTree.log(log(value));
   const updateData = (data: Descendant[]) => {
     setValue(data);
-    update(uid, data);
+    const db = {};
+    data.forEach((el) => translateToDB(db, el));
+    console.log(db);
+    console.log(data);
+    // update(uid, data);
   };
   const renderElement = React.useCallback(
     (props) => <Element {...props} />,
@@ -106,4 +116,17 @@ function log(value: any[]): any {
       .map((c: any) => c.text.trim()),
     children: log(val.children?.filter((c: any) => c.children)),
   }));
+}
+
+function translateToDB(db: any, val: SlateElement) {
+  if (!val.id) {
+    return val;
+  }
+  db[val.id] = {
+    ...val,
+    children: val.children
+      ? val.children.map((c) => translateToDB(db, c as SlateElement))
+      : undefined,
+  };
+  return val.id;
 }

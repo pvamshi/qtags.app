@@ -7,6 +7,7 @@ import {
   Node,
   Range,
   Transforms,
+  Editor,
 } from "slate";
 import { ReactEditor } from "slate-react";
 import { ElementNode } from "./models";
@@ -58,15 +59,61 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
           | undefined;
         const indentText = new Array((listBlock && listBlock[0].depth) || 0)
           .fill("  ")
-          .join("");
-        Transforms.insertText(
+          .map((t) => ({ type: "indent", text: t }));
+        // Transforms.insertText(
+        //   editor,
+        //   indentText + (parent[0].task ? "- [ ] " : "- ")
+        // );
+        const selection = editor.selection;
+        if (!selection) {
+          return;
+        }
+        // const offset = selection.focus.offset;
+        console.log("p", parent[0]);
+        Transforms.removeNodes(editor, { at: parent[1] });
+        Transforms.insertNodes(
           editor,
-          indentText + (parent[0].task ? "- [ ] " : "- ")
+          {
+            type: "list-item",
+            children: [
+              ...indentText,
+              {
+                type: "mark",
+                text: parent[0].task ? "- [ ] " : "- ",
+              },
+              { text: "" },
+            ],
+          } as Node,
+          { at: parent[1] }
         );
+
+        // Transforms.select(editor, SlateEditor.start(editor, parent[1] || []));
+        // Transforms.setSelection(editor, {
+        //   focus: { path: [...(parent[1] || []), 1], offset: 0 },
+        //   anchor: { offset: 0, path: [...(parent[1] || []), 1] },
+        // });
+        Transforms.select(editor, SlateEditor.end(editor, parent[1]));
+        // console.log(parent[1], {
+        //   distance: indentText.length * 2 + 2 + (offset || 0),
+        // });
+        // Transforms.move(editor, {
+        //   distance: indentText.length * 2 + 2 + offset,
+        //   unit: "character",
+        // });
       }
     }
   };
   editor.insertText = (text) => {
+    const [block, path] = getBlock(editor);
+    if (
+      block &&
+      SlateElement.isElement(block) &&
+      (Node.string(block).match(/^\s*- $/) ||
+        Node.string(block).match(/^\s*- \[[xX ]\]/))
+    ) {
+      Transforms.insertNodes(editor, { text });
+      return;
+    }
     insertText(text);
     const { selection } = editor;
     if (text === " " && selection && Range.isCollapsed(selection)) {
@@ -104,25 +151,17 @@ export default function withLists(editor: BaseEditor & ReactEditor) {
       updateBlockType(editor);
     };
 
-    editor.deleteForward = (...args) => {
-      deleteForward(...args);
-      const [block, path] = getBlock(editor);
-      if (!block) {
-        return;
-      }
-      if (SlateElement.isElement(block) && block.type === "list-item") {
-        const text = Node.string(block);
-        if (block.task && !text.match(/\s*- \[ \]/)) {
-          Transforms.setNodes(editor, { task: false }, { at: path });
-        }
-        if (!text.match(/^- /)) {
-          Transforms.setNodes(editor, { type: "paragraph" }, { at: path });
-        }
-      }
-    };
-
     // TODO: if two lists are one after other of same type,  just merge them together
     // editor.normalizeNode = ([node, path]) => {
+    //   if (node && node.type === "mark") {
+    //     console.log("mark");
+    //     if (!Node.string(node).match(/^\s*- $/)) {
+    //       const newt = Node.string(node).slice(-1);
+    //       Transforms.insertText(editor, newt, {
+    //         at: SlateEditor.end(editor, path),
+    //       });
+    //     }
+    //   }
     // };
   };
 

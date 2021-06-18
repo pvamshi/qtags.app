@@ -7,7 +7,5 @@ body {
 }
 
 [role="textbox"] {
-  height: 100vh;
-  background: #161618;
-  color: #c1c1c1;
+  padding: 1rem;
 }
