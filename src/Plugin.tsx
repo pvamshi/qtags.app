@@ -74,8 +74,6 @@ import { ReactEditor } from "slate-react";
 
 type TEditor = SPEditor & ReactEditor & HistoryEditor;
 
-const id = "Examples/Playground";
-
 let components = createSlatePluginsComponents({
   [ELEMENT_MENTION]: withProps(MentionElement, {
     renderLabel: renderMentionLabel,
@@ -143,12 +141,11 @@ const Plugins = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <SlatePlugins
-        id={id}
+        id={"main"}
         plugins={plugins}
         components={components}
         options={options}
         editableProps={editableProps}
-        onChange={(v) => console.log(v)}
       >
         {/* <ToolbarSearchHighlight icon={Search} setSearch={setSearch} /> */}
         <HeadingToolbar>
