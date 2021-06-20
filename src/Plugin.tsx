@@ -55,7 +55,7 @@ import {
 //   ExcalidrawElement,
 // } from "@udecode/slate-plugins-excalidraw";
 import { optionsAutoformat } from "./config/autoformatRules";
-import { initialValuePlayground } from "./config/initialValues";
+// import { initialValuePlayground } from "./config/initialValues_old";
 import {
   editableProps,
   optionsExitBreakPlugin,

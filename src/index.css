@@ -7,5 +7,9 @@ body {
 }
 
 [role="textbox"] {
-  padding: 1rem;
+  /* padding: 1rem; */
+}
+
+ol {
+  margin-left: 0.5rem !important;
 }

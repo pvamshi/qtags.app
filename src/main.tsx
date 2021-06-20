@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
 import "firebase/firestore";
 import firebase from "firebase";
 import Plugin from "./Plugin";
+import App from "./App";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDe0MkMRDzySCZA9Bx_0OWNeZcfkBkzB6M",
@@ -22,7 +22,7 @@ const app = (user: firebase.User) => {
   ReactDOM.render(
     <React.StrictMode>
       {/* <FirebaseAppProvider firebaseConfig={firebaseConfig}> */}
-      {/* <App uid={user.uid} /> */}
+      <App uid={user.uid} />
       {<Plugin />}
       {/* </FirebaseAppProvider> */}
     </React.StrictMode>,
