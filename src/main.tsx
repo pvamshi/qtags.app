@@ -5,6 +5,7 @@ import "firebase/firestore";
 import firebase from "firebase";
 import Plugin from "./Plugin";
 import App from "./App";
+import Home from "./Home";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDe0MkMRDzySCZA9Bx_0OWNeZcfkBkzB6M",
@@ -21,9 +22,16 @@ firebase.initializeApp(firebaseConfig);
 const app = (user: firebase.User) => {
   ReactDOM.render(
     <React.StrictMode>
+      <div className="flex">
+        <div className="flex-none w-64">
+          <Home />
+        </div>
+        <div className="flex-1 pl-5">
+          <App uid={user.uid} />
+          {<Plugin />}
+        </div>
+      </div>
       {/* <FirebaseAppProvider firebaseConfig={firebaseConfig}> */}
-      <App uid={user.uid} />
-      {<Plugin />}
       {/* </FirebaseAppProvider> */}
     </React.StrictMode>,
     document.getElementById("root")

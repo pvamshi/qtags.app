@@ -5,6 +5,8 @@ import {
 import React, { useEffect } from "react";
 import firebase from "firebase";
 import { debounce } from "debounce";
+import { Node } from "slate";
+import { Button } from "antd";
 
 const saveToDB = debounce((id: string, data: any) => {
   firebase
@@ -20,7 +22,7 @@ const App = ({ uid }: { uid: string }) => {
   const { setValue } = useSlatePluginsActions();
   useEffect(() => {
     const value = store["main"]?.value;
-    if (!value) {
+    if (!value || (value.length === 1 && Node.string(value[0]) === "")) {
       return;
     }
     console.log("val chaneed", value);

@@ -148,9 +148,11 @@ const Plugins = () => {
         editableProps={editableProps}
       >
         {/* <ToolbarSearchHighlight icon={Search} setSearch={setSearch} /> */}
-        <HeadingToolbar>
-          <ToolbarButtons />
-        </HeadingToolbar>
+        <div className="sticky top-0 z-10 bg-white">
+          <HeadingToolbar>
+            <ToolbarButtons />
+          </HeadingToolbar>
+        </div>
 
         <BallonToolbarMarks />
 
