@@ -1,5 +1,4 @@
 import "tippy.js/dist/tippy.css";
-import "./index.css";
 import ReactDOM from "react-dom";
 import React, { useMemo } from "react";
 import {

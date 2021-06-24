@@ -1,0 +1,60 @@
+@tailwind base;
+@layer base {
+  ul {
+    list-style: disc;
+    margin-left: 1.5rem;
+  }
+  ol {
+    list-style: auto;
+    margin-left: 2rem;
+  }
+  h1{
+    font-size: 2rem
+  }
+  h2{
+    font-size: 1.5rem
+  }
+  h3{
+    font-size: 1.25rem
+  }
+}
+@tailwind components;
+@tailwind utilities;
+body {
+  margin: 0;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[role="textbox"] {
+  /* padding: 1rem; */
+}
+ul:not([data-type="taskList"])> li > label {
+  display: none;
+}
+ol:not([data-type="taskList"])> li > label {
+  display: none;
+}
+
+ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+  margin-left: 0.25rem;
+
+  li {
+    display: flex;
+    align-items: center;
+
+    > label {
+      flex: 0 0 auto;
+      margin-right: 0.5rem;
+      align-self: start;
+    }
+  }
+
+  input[type="checkbox"] {
+    cursor: pointer;
+  }
+}
