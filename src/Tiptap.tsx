@@ -49,7 +49,6 @@ const Tiptap = ({ uid, file }: { uid: string; file: string }) => {
     if (content) saveToDB(uid, file, content);
   });
 
-  console.log(editor?.getJSON());
   return <EditorContent editor={editor} />;
 };
 

@@ -63,6 +63,9 @@ ul[data-type="taskList"] {
     cursor: pointer;
   }
 }
+li:has(div:has(ul)) {
+  border-left: 1px solid gray ;
+}
 
 .ProseMirror{
   height: 100vh;

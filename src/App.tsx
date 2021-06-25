@@ -16,17 +16,23 @@ const App = ({ user }: { user: firebase.User }) => {
           "flex-none",
           "w-80",
           { hidden: !showSideBar },
-          "md:block",
+          "lg:block",
           "bg-white",
           "z-10",
           { absolute: showSideBar },
-          { "md:static": showSideBar },
+          { "lg:static": showSideBar },
         ])}
       >
-        <Home onChange={setFile} user={user} />
+        <Home
+          onChange={(file) => {
+            setFile(file);
+            setShowSideBar(false);
+          }}
+          user={user}
+        />
       </div>
       <div className="flex-1 p-4">
-        <div className="md:hidden absolute right-4 top-4 z-20">
+        <div className="lg:hidden absolute right-4 top-4 z-20">
           <button className="" onClick={() => setShowSideBar(!showSideBar)}>
             <HamBurgerIcon />
           </button>
