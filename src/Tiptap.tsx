@@ -22,14 +22,6 @@ const Tiptap = ({ uid, file }: { uid: string; file: string }) => {
     ...tiptapConfig,
     content: `loading ...`,
   });
-  // useEffect(() => {
-  //   // const value = store["main"]?.value;
-  //   if (!value )) {
-  //     return;
-  //   }
-  //   console.log("val chaneed", value);
-  //   saveToDB(uid, value);
-  // }, [store, uid]);
   useEffect(() => {
     const dbRef = firebase.database().ref();
     dbRef

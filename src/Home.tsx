@@ -24,9 +24,9 @@ const Home = ({
   }, []);
   return (
     <div className="flex flex-col  h-screen px-4 py-4 bg-white border-r dark:bg-gray-800 dark:border-gray-600 fixed ">
-      <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">
+      <h1 className="text-3xl font-semibold text-gray-800 dark:text-white">
         +qTags.app
-      </h2>
+      </h1>
 
       <div className="relative mt-6">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
