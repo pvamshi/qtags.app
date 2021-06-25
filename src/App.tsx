@@ -1,81 +1,21 @@
-import {
-  useSlatePluginsActions,
-  useSlatePluginsStore,
-} from "@udecode/slate-plugins";
-import React, { useEffect } from "react";
-import firebase from "firebase";
-import { debounce } from "debounce";
-import { Node } from "slate";
-import { Button } from "antd";
+import React, { useState } from "react";
 
-const saveToDB = debounce((id: string, data: any) => {
-  firebase
-    .database()
-    .ref("nodes/" + id + "/main")
-    .set(data)
-    .then(() => {
-      console.log("done writinf");
-    });
-}, 3000);
-const App = ({ uid }: { uid: string }) => {
-  const store = useSlatePluginsStore();
-  const { setValue } = useSlatePluginsActions();
-  useEffect(() => {
-    const value = store["main"]?.value;
-    if (!value || (value.length === 1 && Node.string(value[0]) === "")) {
-      return;
-    }
-    console.log("val chaneed", value);
-    saveToDB(uid, value);
-  }, [store, uid]);
-  useEffect(() => {
-    const dbRef = firebase.database().ref();
-    dbRef
-      .child("nodes")
-      .child(uid)
-      .child("main")
-      .get()
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          setValue(snapshot.val());
-          console.log(snapshot.val());
-        } else {
-          console.log("No data available");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [setValue]);
-  // console.log({ store: store["main"].value, actions });
-  return null;
+import Home from "./Home";
+import TipTap from "./Tiptap";
+
+import type firebase from "firebase";
+const App = ({ user }: { user: firebase.User }) => {
+  const [file, setFile] = useState<string | null>(null);
+  return (
+    <div className="flex">
+      <div className="flex-none w-80">
+        <Home onChange={setFile} user={user} />
+      </div>
+      <div className="flex-1 p-4">
+        {file && <TipTap uid={user.uid} file={file} />}
+      </div>
+    </div>
+  );
 };
-export default App;
 
-/* 
-  firebase
-    .database()
-    .ref("nodes/" + id)
-    .set(data)
-    .then(() => {
-      console.log("done writinf");
-    });u
-u
-const dbRef = firebase.database().ref();
-dbRef
-  .child("nodes")
-  .child(uid)
-  .child("0")
-  .get()
-  .then((snapshot) => {
-    if (snapshot.exists()) {
-      // setValue(snapshot.val());
-      console.log(snapshot.val());
-    } else {
-      console.log("No data available");
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-  });
-  */
+export default App;

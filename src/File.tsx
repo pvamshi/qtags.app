@@ -4,12 +4,15 @@ import clx from "classnames";
 function File({
   name,
   selected = false,
+  onClick,
 }: {
   name: string;
   selected?: boolean;
+  onClick: () => void;
 }) {
   return (
     <a
+      onClick={onClick}
       className={clx([
         "flex",
         "items-center",

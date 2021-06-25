@@ -1,12 +1,11 @@
+import "./index.scss";
+
+import firebase from "firebase/app";
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.scss";
-import "firebase/firestore";
-import firebase from "firebase";
-import Plugin from "./Plugin";
+import "firebase/auth";
+
 import App from "./App";
-import Home from "./Home";
-import TipTap from "./Tiptap";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDe0MkMRDzySCZA9Bx_0OWNeZcfkBkzB6M",
@@ -23,18 +22,7 @@ firebase.initializeApp(firebaseConfig);
 const app = (user: firebase.User) => {
   ReactDOM.render(
     <React.StrictMode>
-      {/* <div className="flex">
-        <div className="flex-none w-64">
-          <Home />
-        </div>
-        <div className="flex-1 pl-5">
-          <App uid={user.uid} />
-          <Plugin />
-        </div>
-      </div> */}
-      {/* <FirebaseAppProvider firebaseConfig={firebaseConfig}> */}
-      {/* </FirebaseAppProvider> */}
-      <TipTap />
+      <App user={user} />
     </React.StrictMode>,
     document.getElementById("root")
   );

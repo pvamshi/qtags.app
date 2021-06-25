@@ -1,72 +1,60 @@
-import {
-  useEditor,
-  EditorContent,
-  mergeAttributes,
-  Extension,
-  Node,
-} from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { BulletList } from "@tiptap/extension-bullet-list";
-import { OrderedList } from "@tiptap/extension-ordered-list";
-import React from "react";
-import Highlight from "@tiptap/extension-highlight";
-import Typography from "@tiptap/extension-typography";
+import { EditorContent, useEditor } from "@tiptap/react";
+import { debounce } from "debounce";
+import firebase from "firebase/app";
+import React, { useEffect, useState } from "react";
+import "firebase/database";
 
-import TaskList from "@tiptap/extension-task-list";
-import TaskItem from "@tiptap/extension-task-item";
-import { TaskListOptions } from "@tiptap/extension-task-list";
+import tiptapConfig from "./tiptap-editor";
 
-const Tiptap = () => {
+const saveToDB = debounce((id: string, file: string, data: any) => {
+  console.log("writing data", id, file, data);
+  firebase
+    .database()
+    .ref(`nodes/${id}/${file}`)
+    .set(replaceAttr(data))
+    .then(() => {
+      console.log("done writinf");
+    });
+}, 3000);
+
+const Tiptap = ({ uid, file }: { uid: string; file: string }) => {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Highlight,
-      Typography,
-      BulletList.extend({
-        content: "taskItem+",
-        addCommands() {
-          return {
-            toggleBulletList:
-              () =>
-              ({ commands }) => {
-                return commands.toggleList("bulletList", "taskItem");
-              },
-          };
-        },
-      }),
-      OrderedList.extend({
-        content: "taskItem+",
-        addCommands() {
-          return {
-            toggleBulletList:
-              () =>
-              ({ commands }) => {
-                return commands.toggleList("bulletList", "taskItem");
-              },
-          };
-        },
-      }),
-      TaskItem.configure({ nested: true }),
-      TaskList,
-    ],
-    content: `<p>Hello World! 🌎️</p>
-<ul><li>some text
-    <ul data-type="taskList">
-    <li data-type="taskItem" data-checked="true">flour</li>
-    <li data-type="taskItem" data-checked="true">baking powder</li>
-    <li data-type="taskItem" data-checked="true">salt</li>
-    <li data-type="taskItem" data-checked="false">sugar</li>
-    <li data-type="taskItem" data-checked="false">milk</li>
-    <li data-type="taskItem" data-checked="false">eggs</li>
-    <li data-type="taskItem" data-checked="false">butter</li>
-  </ul></li>
-  </ul>
-
-    `,
+    ...tiptapConfig,
+    content: `loading ...`,
   });
+  // useEffect(() => {
+  //   // const value = store["main"]?.value;
+  //   if (!value )) {
+  //     return;
+  //   }
+  //   console.log("val chaneed", value);
+  //   saveToDB(uid, value);
+  // }, [store, uid]);
+  useEffect(() => {
+    const dbRef = firebase.database().ref();
+    dbRef
+      .child("nodes")
+      .child(uid)
+      .child(file)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("s", snapshot.val(), revertAttr(snapshot.val()));
+          editor?.commands.setContent(revertAttr(snapshot.val()), false);
+        } else {
+          console.log("No data available");
+          editor?.commands.setContent(`<h1>${file}</h1><p></p>`);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [editor, file]);
   editor?.on("update", (c: any) => {
     // The content has changed.
     // console.log({ c });
+    const content = editor?.getJSON();
+    if (content) saveToDB(uid, file, content);
   });
 
   console.log(editor?.getJSON());
@@ -74,3 +62,22 @@ const Tiptap = () => {
 };
 
 export default Tiptap;
+function replaceAttr(obj: any) {
+  if (obj.hasOwnProperty("attrs")) {
+    obj.attrs = JSON.stringify(obj["attrs"]);
+  }
+  if (obj.content) {
+    obj.content = obj.content.map((c: any) => replaceAttr(c));
+  }
+  return obj;
+}
+
+function revertAttr(obj: any) {
+  if (obj.hasOwnProperty("attrs")) {
+    obj.attrs = JSON.parse(obj["attrs"]);
+  }
+  if (obj.content) {
+    obj.content = obj.content.map((c: any) => revertAttr(c));
+  }
+  return obj;
+}

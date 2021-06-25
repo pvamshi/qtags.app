@@ -9,13 +9,18 @@
     margin-left: 2rem;
   }
   h1{
-    font-size: 2rem
+    font-size: 2rem;
+    @apply font-black;
   }
   h2{
-    font-size: 1.5rem
+    font-size: 1.5rem;
+    @apply font-bold;
+    opacity: .8;
   }
   h3{
-    font-size: 1.25rem
+    font-size: 1.25rem;
+    @apply font-semibold;
+    opacity: .6;
   }
 }
 @tailwind components;
@@ -57,4 +62,9 @@ ul[data-type="taskList"] {
   input[type="checkbox"] {
     cursor: pointer;
   }
+}
+
+.ProseMirror{
+  height: 100vh;
+  outline: none;
 }
