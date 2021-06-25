@@ -68,6 +68,22 @@ li:has(div:has(ul)) {
 }
 
 .ProseMirror{
-  height: 100vh;
+  height: calc(100vh - 2rem);
   outline: none;
+}
+
+// Colors
+$bg-color: #fff;
+$dot-color: #eee;
+
+// Dimensions
+$dot-size: .2rem;
+$dot-space: 1.5rem;
+
+.dots {
+	background:
+		linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
+		linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center,
+		$dot-color;
+	background-size: $dot-space $dot-space;
 }

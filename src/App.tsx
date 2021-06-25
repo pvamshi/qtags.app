@@ -10,7 +10,7 @@ const App = ({ user }: { user: firebase.User }) => {
   const [file, setFile] = useState<string | null>(null);
   const [showSideBar, setShowSideBar] = useState(false);
   return (
-    <div className="flex">
+    <div className="flex bg-white">
       <div
         className={classNames([
           "flex-none",
@@ -31,7 +31,7 @@ const App = ({ user }: { user: firebase.User }) => {
           user={user}
         />
       </div>
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4 dots">
         <div className="lg:hidden absolute right-4 top-4 z-20">
           <button className="" onClick={() => setShowSideBar(!showSideBar)}>
             <HamBurgerIcon />
