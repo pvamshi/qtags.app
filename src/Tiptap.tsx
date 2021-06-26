@@ -23,6 +23,9 @@ const Tiptap = ({ uid, file }: { uid: string; file: string }) => {
     content: `loading ...`,
   });
   useEffect(() => {
+    console.log("editor");
+  }, [editor]);
+  useEffect(() => {
     const dbRef = firebase.database().ref();
     dbRef
       .child("nodes")
@@ -42,6 +45,9 @@ const Tiptap = ({ uid, file }: { uid: string; file: string }) => {
         console.error(error);
       });
   }, [editor, file]);
+  // editor?.on("transaction", (a, b, c, d) => {
+  //   console.log({ a, b, c, d });
+  // });
   editor?.on("update", (c: any) => {
     // The content has changed.
     // console.log({ c });
