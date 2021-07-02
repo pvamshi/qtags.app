@@ -9,19 +9,26 @@
   "dependencies": {
     "@tailwindcss/typography": "^0.4.1",
     "@tiptap/extension-highlight": "^2.0.0-beta.14",
+    "@tiptap/extension-mention": "^2.0.0-beta.61",
     "@tiptap/extension-task-item": "^2.0.0-beta.16",
     "@tiptap/extension-task-list": "^2.0.0-beta.16",
+    "@tiptap/extension-text-style": "^2.0.0-beta.16",
     "@tiptap/extension-typography": "^2.0.0-beta.12",
     "@tiptap/react": "^2.0.0-beta.51",
     "@tiptap/starter-kit": "^2.0.0-beta.81",
+    "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
+    "@toast-ui/react-editor": "^3.0.0",
     "classnames": "^2.3.1",
     "debounce": "^1.2.1",
     "firebase": "^8.6.7",
     "nanoid": "^3.1.23",
+    "prismjs": "^1.24.0",
+    "prosemirror-mentions": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hotkeys-hook": "^3.3.2",
-    "tailwindcss": "^2.2.2"
+    "tailwindcss": "^2.2.2",
+    "tippy.js": "^6.3.1"
   },
   "devDependencies": {
     "@types/debounce": "^1.2.0",

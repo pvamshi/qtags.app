@@ -4,14 +4,26 @@ import firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
 import "firebase/database";
 import { buildTree, flattenData } from "./persistance";
-
+import init from "./init-content.json";
 import tiptapConfig from "./tiptap-editor";
+
+
+
+
+
+
+
+
+
+
+
 
 const saveToDB = debounce((id: string, file: string, data: any) => {
   // console.log("writing data", id, file, data);
-  const fin: any[] = [];
-  flattenData({ attrs: { nodeid: "root" }, ...data }, fin);
-  console.log(fin);
+  console.log(data);
+  // const fin: any[] = [];
+  // flattenData({ attrs: { nodeid: "root" }, ...data }, fin);
+  // console.log(fin);
   // console.log(JSON.stringify(buildTree(fin)));
   // firebase
   //   .database()
@@ -31,7 +43,7 @@ const Tiptap = ({ uid, file }: { uid: string; file: string }) => {
     console.log("editor");
   }, [editor]);
   useEffect(() => {
-    editor?.commands.setContent("<p>write</p>");
+    editor?.commands.setContent(init);
     // const dbRef = firebase.database().ref();
     // dbRef
     //   .child("nodes")
@@ -53,7 +65,7 @@ const Tiptap = ({ uid, file }: { uid: string; file: string }) => {
   }, [editor, file]);
   editor?.on("update", (c: any) => {
     // The content has changed.
-    // console.log({ c });
+    console.log({ c });
     const content = editor?.getJSON();
     if (content) {
       saveToDB(uid, file, content);

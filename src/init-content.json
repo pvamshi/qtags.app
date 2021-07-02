@@ -1,0 +1,158 @@
+{
+  "id": "root",
+  "type": "doc",
+  "attrs": { "nodeid": "root" },
+  "content": [
+    {
+      "id": "LZPvuqQGx6FuwQzjB76m8",
+      "type": "heading",
+      "attrs": { "level": 2, "nodeid": "LZPvuqQGx6FuwQzjB76m8" },
+      "content": [{ "type": "text", "text": "write" }]
+    },
+    {
+      "id": "W9FfyyfLUUeadvAh7gCQK",
+      "type": "bulletList",
+      "attrs": { "nodeid": "W9FfyyfLUUeadvAh7gCQK" },
+      "content": [
+        {
+          "id": "gnfktRSThNTqvFM3mSaNh",
+          "type": "taskItem",
+          "attrs": { "checked": false, "nodeid": "gnfktRSThNTqvFM3mSaNh" },
+          "content": [
+            {
+              "id": "WblainIBGBlt_XdwwwumZ",
+              "type": "paragraph",
+              "attrs": { "nodeid": "WblainIBGBlt_XdwwwumZ" },
+              "content": [{ "type": "text", "text": "asdfsdf" }]
+            },
+            {
+              "id": "ilMnQiV7hWxMf1Krs7vdH",
+              "type": "orderedList",
+              "attrs": { "start": 1, "nodeid": "ilMnQiV7hWxMf1Krs7vdH" },
+              "content": [
+                {
+                  "id": "g8747NXlVpb_-35awC2D8",
+                  "type": "taskItem",
+                  "attrs": {
+                    "checked": false,
+                    "nodeid": "g8747NXlVpb_-35awC2D8"
+                  },
+                  "content": [
+                    {
+                      "id": "K_SrMki1BpS8Tqac2r9Na",
+                      "type": "paragraph",
+                      "attrs": { "nodeid": "K_SrMki1BpS8Tqac2r9Na" },
+                      "content": [{ "type": "text", "text": "sdsdfsd" }]
+                    }
+                  ]
+                },
+                {
+                  "id": "qt77-RwHhERA5nfIXkrhl",
+                  "type": "taskItem",
+                  "attrs": {
+                    "checked": false,
+                    "nodeid": "qt77-RwHhERA5nfIXkrhl"
+                  },
+                  "content": [
+                    {
+                      "id": "nYOk01UbweWEw-tciJ5Ju",
+                      "type": "paragraph",
+                      "attrs": { "nodeid": "nYOk01UbweWEw-tciJ5Ju" },
+                      "content": [{ "type": "text", "text": "sdfsdf" }]
+                    },
+                    {
+                      "id": "1yQiXIIYhNJ6XTGsYzTFa",
+                      "type": "taskList",
+                      "attrs": { "nodeid": "1yQiXIIYhNJ6XTGsYzTFa" },
+                      "content": [
+                        {
+                          "id": "qc416XP-8hY-EhuQOVYWX",
+                          "type": "taskItem",
+                          "attrs": {
+                            "checked": true,
+                            "nodeid": "qc416XP-8hY-EhuQOVYWX"
+                          },
+                          "content": [
+                            {
+                              "id": "rQOYnwcgvLhh5zFh3OgVe",
+                              "type": "paragraph",
+                              "attrs": { "nodeid": "rQOYnwcgvLhh5zFh3OgVe" },
+                              "content": [
+                                { "type": "text", "text": "sdsfsdfds" }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "drTWg2ScdN5S2DfdY3BPU",
+                          "type": "taskItem",
+                          "attrs": {
+                            "checked": false,
+                            "nodeid": "drTWg2ScdN5S2DfdY3BPU"
+                          },
+                          "content": [
+                            {
+                              "id": "KF1KVTRYiqtL1EGYpia90",
+                              "type": "paragraph",
+                              "attrs": { "nodeid": "KF1KVTRYiqtL1EGYpia90" },
+                              "content": [{ "type": "text", "text": "sdfsd" }]
+                            },
+                            {
+                              "id": "yoQBVN6oTwvLOxqxPij-y",
+                              "type": "taskList",
+                              "attrs": { "nodeid": "yoQBVN6oTwvLOxqxPij-y" },
+                              "content": [
+                                {
+                                  "id": "BWEURBIHoJZR4BFDMwISb",
+                                  "type": "taskItem",
+                                  "attrs": {
+                                    "checked": "checked",
+                                    "nodeid": "BWEURBIHoJZR4BFDMwISb"
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "IjXTgzhcKB5Q3N5-p0CMd",
+                                      "type": "paragraph",
+                                      "attrs": {
+                                        "nodeid": "IjXTgzhcKB5Q3N5-p0CMd"
+                                      },
+                                      "content": [
+                                        { "type": "text", "text": "sdfsfsd" }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "3A1V0D3ppNAX0Hb31tBww",
+                                  "type": "taskItem",
+                                  "attrs": {
+                                    "checked": false,
+                                    "nodeid": "3A1V0D3ppNAX0Hb31tBww"
+                                  },
+                                  "content": [
+                                    {
+                                      "id": "PrprgcYKra3y0X92a__5D",
+                                      "type": "paragraph",
+                                      "attrs": {
+                                        "nodeid": "PrprgcYKra3y0X92a__5D"
+                                      },
+                                      "content": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

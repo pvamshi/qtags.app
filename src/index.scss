@@ -8,19 +8,19 @@
     list-style: auto;
     margin-left: 2rem;
   }
-  h1{
+  h1 {
     font-size: 2rem;
     @apply font-black;
   }
-  h2{
+  h2 {
     font-size: 1.5rem;
     @apply font-bold;
-    opacity: .8;
+    opacity: 0.8;
   }
-  h3{
+  h3 {
     font-size: 1.25rem;
     @apply font-semibold;
-    opacity: .6;
+    opacity: 0.6;
   }
 }
 @tailwind components;
@@ -31,15 +31,19 @@ body {
     monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  #root {
+    height: 100%;
+  }
 }
 
 [role="textbox"] {
   /* padding: 1rem; */
 }
-ul:not([data-type="taskList"])> li > label {
+ul:not([data-type="taskList"]) > li > label {
   display: none;
 }
-ol:not([data-type="taskList"])> li > label {
+ol:not([data-type="taskList"]) > li > label {
   display: none;
 }
 
@@ -64,12 +68,18 @@ ul[data-type="taskList"] {
   }
 }
 li:has(div:has(ul)) {
-  border-left: 1px solid gray ;
+  border-left: 1px solid gray;
 }
 
-.ProseMirror{
-  height: calc(100vh - 2rem);
+.ProseMirror {
+  // height: calc(100vh - 2rem);
   outline: none;
+  font-size: 24px !important;
+  font-family: "Roboto" "Indie Flower" !important;
+  font-style: normal;
+  font-variant: bold;
+  font-weight: 400;
+  line-height: 28px;
 }
 
 // Colors
@@ -77,13 +87,70 @@ $bg-color: #fff;
 $dot-color: #eee;
 
 // Dimensions
-$dot-size: .2rem;
+$dot-size: 0.2rem;
 $dot-space: 1.5rem;
 
 .dots {
-	background:
-		linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
-		linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center,
-		$dot-color;
-	background-size: $dot-space $dot-space;
+  background: linear-gradient(
+        90deg,
+        $bg-color ($dot-space - $dot-size),
+        transparent 1%
+      )
+      center,
+    linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center,
+    $dot-color;
+  background-size: $dot-space $dot-space;
 }
+
+span[data-type="tag"] {
+  // &::before {
+  //   content: "#" !important;
+  // }
+  // TODO: fix this hack
+  // &::after {
+  //   content: " ";
+  // }
+  color: forestgreen;
+  // opacity: 0.7;
+}
+
+// h1 {
+//   font-family: "Indie Flower";
+//   font-size: 24px;
+//   font-style: normal;
+//   font-variant: normal;
+//   font-weight: 700;
+//   line-height: 26.4px;
+// }
+// h3 {
+//   font-family: "Indie Flower";
+//   font-size: 14px;
+//   font-style: normal;
+//   font-variant: normal;
+//   font-weight: 700;
+//   line-height: 15.4px;
+// }
+// p {
+//   font-family: "Indie Flower";
+//   font-size: 14px;
+//   font-style: normal;
+//   font-variant: normal;
+//   font-weight: 400;
+//   line-height: 20px;
+// }
+// blockquote {
+//   font-family: "Indie Flower";
+//   font-size: 21px;
+//   font-style: normal;
+//   font-variant: normal;
+//   font-weight: 400;
+//   line-height: 30px;
+// }
+// pre {
+//   font-family: "Indie Flower";
+//   font-size: 13px;
+//   font-style: normal;
+//   font-variant: normal;
+//   font-weight: 400;
+//   line-height: 18.5714px;
+// }

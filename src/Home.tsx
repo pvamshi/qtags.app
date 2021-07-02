@@ -23,7 +23,7 @@ const Home = ({
     }
   }, []);
   return (
-    <div className="flex flex-col  h-screen px-4 py-4 bg-white border-r dark:bg-gray-800 dark:border-gray-600 fixed ">
+    <div className="flex flex-col  h-screen px-4 py-4 bg-white  dark:bg-gray-800 dark:border-gray-600 fixed ">
       <h1 className="text-3xl font-semibold text-gray-800 dark:text-white">
         +qTags.app
       </h1>
