@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import Home from "./Home";
-import TipTap from "./Tiptap";
 
 import HamBurgerIcon from "./icons/hamburger";
 import type firebase from "firebase";
