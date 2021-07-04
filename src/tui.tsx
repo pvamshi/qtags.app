@@ -12,22 +12,23 @@ import Prism from "prismjs";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import idGen from "./id-generator-plugin";
+import { buildTree, flattenData, getTree } from "./persistance";
 
 const saveToDB = debounce((id: string, file: string, data: any) => {
-  // console.log("writing data", id, file, data);
+  console.log("writing data", id, file, data);
   // IMPORTANT : TODO: Before save to db, make sure to convert it to wyswig doc mode
-  // const fin: any[] = [];
-  // flattenData({ attrs: { nodeid: "root" }, ...data }, fin);
-  // console.log(fin);
-  // console.log(JSON.stringify(buildTree(fin)));
+  const fin: any = {};
+  flattenData(data.doc, fin);
+  console.log(replaceAttr(fin));
+  // console.log(JSON.stringify(getTree(fin, "doc")));
   firebase
     .database()
     .ref(`nodes/${id}/${file}`)
-    .set(replaceAttr(data))
+    .set(replaceAttr(fin))
     .then(() => {
       console.log("done writing");
     });
-}, 5000);
+}, 1000);
 
 const MyComponent = ({ file, uid }: { file: string; uid: string }) => {
   const ref = useRef<Editor>(null);
@@ -47,7 +48,7 @@ const MyComponent = ({ file, uid }: { file: string; uid: string }) => {
             console.log("s", snapshot.val(), revertAttr(snapshot.val()));
             ref.current
               ?.getInstance()
-              .exec("setJSON", revertAttr(snapshot.val()));
+              .exec("setJSON", revertAttr(getTree(snapshot.val(), "doc")));
             // editor?.commands.setContent(revertAttr(snapshot.val()), false);
           } else {
             console.log("No data available");
@@ -82,15 +83,15 @@ const MyComponent = ({ file, uid }: { file: string; uid: string }) => {
         ref={ref}
         theme="dark"
         onChange={(type: EditorType) => {
+          const editor = (ref.current as any).editorInst;
           if (type === "markdown") {
             // convert it to node structure
-          } else {
-            const data = (
-              ref.current as any
-            ).editorInst.wwEditor.view.state.toJSON();
-            console.log(data);
-            saveToDB(uid, file, data);
+            const mdNode = editor.toastMark.getRootNode();
+            const data = editor.convertor.toWysiwygModel(mdNode);
+            editor.wwEditor.setModel(data);
           }
+          const data = editor.wwEditor.view.state.toJSON();
+          saveToDB(uid, file, data);
         }}
       />
     </>
@@ -98,17 +99,24 @@ const MyComponent = ({ file, uid }: { file: string; uid: string }) => {
 };
 
 export default MyComponent;
-function replaceAttr(obj: any) {
+function replaceAttr(obj: Record<string, any>) {
   if (obj.hasOwnProperty("attrs")) {
     obj.attrs = JSON.stringify(obj["attrs"]);
   }
-  if (obj.content) {
-    obj.content = obj.content.map((c: any) => replaceAttr(c));
-  }
-  return obj;
+  // if (obj.content) {
+  //   obj.content = obj.content.map((c: any) => replaceAttr(c));
+  // }
+  return Object.entries(obj).reduce<Record<string, any>>((acc, [id, curr]) => {
+    if (curr["attrs"]) curr.attrs = JSON.stringify(curr["attrs"]);
+    acc[id] = curr;
+    return acc;
+  }, {});
 }
 
 function revertAttr(obj: any) {
+  if (!obj) {
+    return obj;
+  }
   if (obj.hasOwnProperty("attrs")) {
     obj.attrs = JSON.parse(obj["attrs"]);
   }

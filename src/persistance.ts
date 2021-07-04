@@ -1,14 +1,14 @@
 export function flattenData(tree: Record<string, any>, result: any) {
-  if (!tree.attrs || !tree.attrs.nodeid) {
+  if (tree.type !== "doc" && (!tree.attrs || !tree.attrs.nodeid)) {
     return tree;
   }
   const obj: any = {
-    id: tree.attrs.nodeid,
+    id: tree.type === "doc" ? "doc" : tree.attrs.nodeid,
     type: tree.type,
-    attrs: tree.attrs,
   };
+  if (tree.type !== "doc") obj.attrs = tree.attrs;
   obj.children = (tree.content || []).map((t: any) => flattenData(t, result));
-  result.push(obj);
+  result[obj.id] = obj;
   return obj.id;
 }
 
@@ -21,13 +21,12 @@ export function buildTree(data: any[]) {
   return getTree(mapData, "root");
 }
 
-function getTree(mapData: any, key: string) {
+export function getTree(mapData: any, key: string) {
   console.log(key);
 
   const obj = { ...mapData[key] };
   if (!obj || !obj.children) {
-    console.log("invalid key", key);
-    return null;
+    return obj;
   }
   obj.content = obj.children.map((c: any) =>
     typeof c !== "string" ? c : getTree(mapData, c)
