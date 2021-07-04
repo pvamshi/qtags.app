@@ -8,9 +8,28 @@ import codeSyntaxHighlight from "@toast-ui/editor-plugin-code-syntax-highlight";
 import { Editor } from "@toast-ui/react-editor";
 import { nanoid } from "nanoid";
 import Prism from "prismjs";
-import React, { useCallback, useEffect, useRef } from "react";
-import type { Plugin } from "prosemirror-state";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { EditorState, Plugin, TextSelection } from "prosemirror-state";
+import debounce from "debounce";
+import { DOMParser, Node, Schema } from "prosemirror-model";
 
+import { buildTree, flattenData } from "./persistance";
+import { EditorView } from "prosemirror-view";
+
+const saveToDB = debounce((id: string, file: string, data: any) => {
+  // console.log("writing data", id, file, data);
+  const fin: any[] = [];
+  flattenData({ attrs: { nodeid: "root" }, ...data }, fin);
+  console.log(fin);
+  // console.log(JSON.stringify(buildTree(fin)));
+  // firebase
+  //   .database()
+  //   .ref(`nodes/${id}/${file}`)
+  //   .set(replaceAttr(data))
+  //   .then(() => {
+  //     console.log("done writinf");
+  //   });
+}, 1000);
 function idGen(context: PluginContext, options?: any): PluginInfo {
   console.log({ context, options });
   const isTargetNodeOfType = (node: any, type: string) => node.type === type;
@@ -51,6 +70,23 @@ function idGen(context: PluginContext, options?: any): PluginInfo {
   });
   return {
     wysiwygPlugins: [() => idGeni],
+    wysiwygCommands: {
+      getJSON: (cb, state) => {
+        // cb(state.toJSON());
+        console.log(cb);
+        return false;
+      },
+      setJSON: (obj, state, dispatch, view) => {
+        view.updateState(
+          EditorState.create({
+            schema: view.state.schema,
+            doc: Node.fromJSON(view.state.schema, obj),
+            plugins: view.state.plugins,
+          })
+        );
+        return true;
+      },
+    },
     // DO NOT REMOVE THIS COMMENT
     // this is where we can add our own version of p, li with id and hashtag implementation
     // check code syntax highlight plugin for ex.
@@ -63,8 +99,33 @@ function idGen(context: PluginContext, options?: any): PluginInfo {
 }
 
 const MyComponent = () => {
-  const ref = useRef(null);
+  const ref = useRef<Editor>(null);
+  const [init, setInit] = useState(false);
 
+  useEffect(() => {
+    if (init) return;
+    if (ref && ref.current !== null) {
+      ref.current?.getInstance().exec("setJSON", {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            attrs: {
+              htmlAttrs: null,
+              classNames: null,
+              nodeid: "DbwVGZ8FHvqnC8VfA9D9C",
+            },
+            content: [
+              {
+                type: "text",
+                text: "Wow!",
+              },
+            ],
+          },
+        ],
+      });
+    }
+  }, [ref.current, init, setInit]);
   return (
     <Editor
       initialValue="hello react editor world!"
