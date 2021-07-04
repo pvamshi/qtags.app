@@ -38,7 +38,7 @@ const App = ({ user }: { user: firebase.User }) => {
           </button>
         </div>
         {/* {file && <TipTap uid={user.uid} file={file} />} */}
-        <Tui />
+        {file && <Tui file={file} uid={user.uid} />}
       </div>
     </div>
   );
