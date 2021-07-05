@@ -25,6 +25,7 @@ const App = ({ user }: { user: firebase.User }) => {
       >
         <Home
           onChange={(file) => {
+            console.log("filie ch");
             setFile(file);
             setShowSideBar(false);
           }}

@@ -12,7 +12,7 @@ export function flattenData(tree: Record<string, any>, result: any) {
   return obj.id;
 }
 
-export function buildTree(data: any[]) {
+function buildTree(data: any[]) {
   const mapData = data.reduce((acc, curr) => {
     acc[curr.id] = curr;
     return acc;
@@ -22,8 +22,6 @@ export function buildTree(data: any[]) {
 }
 
 export function getTree(mapData: any, key: string) {
-  console.log(key);
-
   const obj = { ...mapData[key] };
   if (!obj || !obj.children) {
     return obj;
@@ -32,5 +30,36 @@ export function getTree(mapData: any, key: string) {
     typeof c !== "string" ? c : getTree(mapData, c)
   );
   obj.children = undefined;
+  return obj;
+}
+
+export function replaceAttr(obj: Record<string, any>) {
+  if (obj.hasOwnProperty("attrs")) {
+    obj.attrs = JSON.stringify(obj["attrs"]);
+  }
+  // if (obj.content) {
+  //   obj.content = obj.content.map((c: any) => replaceAttr(c));
+  // }
+  return Object.entries(obj).reduce<Record<string, any>>((acc, [id, curr]) => {
+    console.log("a", curr["attrs"]);
+    if (curr["attrs"]) {
+      const js = JSON.stringify(curr["attrs"]);
+      curr.attrs = js;
+    }
+    acc[id] = curr;
+    return acc;
+  }, {});
+}
+
+export function revertAttr(obj: any) {
+  if (!obj) {
+    return obj;
+  }
+  if (obj.hasOwnProperty("attrs")) {
+    obj.attrs = JSON.parse(obj["attrs"]);
+  }
+  if (obj.content) {
+    obj.content = obj.content.map((c: any) => revertAttr(c));
+  }
   return obj;
 }

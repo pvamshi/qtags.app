@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import File from "./File";
 import AddFileIcon from "./AddFileIcon";
-import type firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/database";
 
 const Home = ({
   user,
@@ -10,19 +11,46 @@ const Home = ({
   user: firebase.User;
   onChange: (file: string) => void;
 }) => {
-  const [files, setFiles] = useState<string[]>([
-    "20210704",
-    "20210625",
-    "20210624",
-    "qtagsapp",
-  ]);
+  const [files, setFiles] = useState<string[] | undefined>();
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [searchText, setSearchText] = useState("");
+  const dbFilesRef = firebase.database().ref().child(user.uid).child("files");
   useEffect(() => {
-    if (files.length > 0) {
+    if (!user || !user.uid || files !== undefined || !dbFilesRef) {
+      return;
+    }
+    dbFilesRef
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const files = snapshot.val();
+          setFiles(Object.values(files).map((file: any) => file.name));
+        } else {
+          console.log("No data available for files");
+          setFiles([]);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [user.uid, dbFilesRef]);
+  useEffect(() => {
+    if (files && files.length > 0) {
       onChange(files[0]);
     }
-  }, []);
+  }, [files]);
+  const addFile = (file: string) => {
+    const newFiles = files ? [file, ...files] : [file];
+    setFiles(newFiles);
+    setSelectedIndex(0);
+    onChange(searchText);
+
+    dbFilesRef
+      .set(
+        newFiles.reduce((acc, curr) => ({ ...acc, [curr]: { name: curr } }), {})
+      )
+      .then((f) => console.log("done adding file", f));
+  };
   return (
     <div className="flex flex-col  h-screen px-4 py-4 bg-white  dark:bg-gray-800 dark:border-gray-600 fixed ">
       <h1 className="text-3xl font-semibold text-gray-800 dark:text-white">
@@ -61,9 +89,8 @@ const Home = ({
               type="button"
               onClick={() => {
                 if (searchText) {
-                  setFiles([searchText, ...files]);
-                  setSelectedIndex(0);
-                  onChange(searchText);
+                  //   setFiles([searchText, ...files]);
+                  addFile(searchText);
                   setSearchText("");
                 }
               }}
@@ -81,7 +108,7 @@ const Home = ({
 
       <div className="flex flex-col justify-between flex-1 mt-6">
         <nav>
-          {files.map((f, index) => (
+          {files?.map((f, index) => (
             <File
               key={index}
               name={f}
